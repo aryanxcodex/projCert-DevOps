@@ -1,0 +1,22 @@
+- name: Deploy PHP App
+  hosts: test
+  become: yes
+  tasks:
+    - name: Stop and remove existing container
+      shell: docker rm -f phpapp || true
+
+    - name: Remove old code
+      file:
+        path: /home/ubuntu/phpapp
+        state: absent
+
+    - name: Clone latest code
+      git:
+        repo: https://github.com/yourusername/projCert.git
+        dest: /home/ubuntu/phpapp
+
+    - name: Build Docker Image
+      shell: docker build -t phpapp /home/ubuntu/phpapp
+
+    - name: Run Docker container
+      shell: docker run -d -p 80:80 --name phpapp phpapp
