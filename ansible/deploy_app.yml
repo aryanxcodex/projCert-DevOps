@@ -30,9 +30,7 @@
     - name: Build Docker image from cloned code
       docker_image:
         name: "{{ app_image }}"
-        build:
-          context: "{{ dockerfile_dir }}"  # Build context (directory with Dockerfile)
-          dockerfile: "Dockerfile"  # Name of the Dockerfile (use uppercase 'D')
+        path: "{{ dockerfile_dir }}"  
         state: present
 
     - name: Run Docker container from built image
