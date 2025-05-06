@@ -31,8 +31,8 @@
       docker_image:
         name: "{{ app_image }}"
         build:
-          context: "{{ dockerfile_dir }}"
-          dockerfile: "Dockerfile"  # Specify the Dockerfile name if it's lowercase
+          context: "{{ dockerfile_dir }}"  # Build context (directory with Dockerfile)
+          dockerfile: "Dockerfile"  # Name of the Dockerfile (use uppercase 'D')
         state: present
 
     - name: Run Docker container from built image
