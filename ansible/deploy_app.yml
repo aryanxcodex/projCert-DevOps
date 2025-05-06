@@ -5,36 +5,49 @@
     app_name: phpapp
     app_repo: https://github.com/aryanxcodex/projCert-DevOps
     app_dir: /home/ubuntu/phpapp
-    dockerfile_dir: /home/ubuntu/phpapp  # Dockerfile is at the root of the repo
+    dockerfile_dir: /home/ubuntu/phpapp  # Ensure Dockerfile is here after clone
     app_image: phpapp
     app_port: 80
 
   tasks:
     - name: Ensure old container is removed (if running)
-      docker_container:
+      community.docker.docker_container:
         name: "{{ app_name }}"
         state: absent
         force_kill: yes
 
     - name: Ensure old code is removed
-      file:
+      ansible.builtin.file:
         path: "{{ app_dir }}"
         state: absent
 
     - name: Clone latest code from GitHub
-      git:
+      ansible.builtin.git:
         repo: "{{ app_repo }}"
         dest: "{{ app_dir }}"
         force: yes
 
+    # Optional: Check Dockerfile exists
+    - name: Check if Dockerfile exists
+      ansible.builtin.stat:
+        path: "{{ dockerfile_dir }}/Dockerfile"
+      register: dockerfile_stat
+
+    - name: Fail if Dockerfile not found
+      ansible.builtin.fail:
+        msg: "Dockerfile not found in {{ dockerfile_dir }}. Check repository structure."
+      when: not dockerfile_stat.stat.exists
+
     - name: Build Docker image from cloned code
-      docker_image:
+      community.docker.docker_image:
         name: "{{ app_image }}"
-        path: "{{ dockerfile_dir }}"  
+        source: build
+        build:
+          path: "{{ dockerfile_dir }}"
         state: present
 
     - name: Run Docker container from built image
-      docker_container:
+      community.docker.docker_container:
         name: "{{ app_name }}"
         image: "{{ app_image }}"
         state: started
