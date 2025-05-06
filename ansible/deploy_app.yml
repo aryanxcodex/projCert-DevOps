@@ -3,7 +3,7 @@
   become: yes
   vars:
     app_name: phpapp
-    app_repo: https://github.com/yourusername/projCert.git
+    app_repo: https://github.com/aryanxcodex/projCert-DevOps
     app_dir: /home/ubuntu/phpapp
     app_image: phpapp
     app_port: 80
