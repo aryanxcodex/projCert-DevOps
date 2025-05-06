@@ -1,13 +1,10 @@
 FROM devopsedu/webapp
 
-# Set working directory (optional but clean)
-WORKDIR /var/www/html
-
-# Remove default index.html (before copy)
-RUN rm -f /var/www/html/index.html
-
-# Copy your PHP website code into the container
+# Copy all files in 'website' to Apache's root directory
 COPY website/ /var/www/html/
 
-# Start Apache
+# Optional: Remove default index.html if present in the base image
+RUN rm -f /var/www/html/index.html || true
+
+# Start Apache in foreground
 CMD ["apachectl", "-D", "FOREGROUND"]

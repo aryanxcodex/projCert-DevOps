@@ -5,6 +5,7 @@
     app_name: phpapp
     app_repo: https://github.com/aryanxcodex/projCert-DevOps
     app_dir: /home/ubuntu/phpapp
+    dockerfile_dir: /home/ubuntu/phpapp  # Dockerfile is at the root of the repo
     app_image: phpapp
     app_port: 80
 
@@ -29,7 +30,7 @@
     - name: Build Docker image from cloned code
       docker_image:
         name: "{{ app_image }}"
-        path: "{{ app_dir }}"
+        path: "{{ dockerfile_dir }}"
         state: present
 
     - name: Run Docker container from built image
