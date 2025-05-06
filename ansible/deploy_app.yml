@@ -1,22 +1,42 @@
-- name: Deploy PHP App
+- name: Deploy PHP App using Docker
   hosts: test
   become: yes
-  tasks:
-    - name: Stop and remove existing container
-      shell: docker rm -f phpapp || true
+  vars:
+    app_name: phpapp
+    app_repo: https://github.com/yourusername/projCert.git
+    app_dir: /home/ubuntu/phpapp
+    app_image: phpapp
+    app_port: 80
 
-    - name: Remove old code
+  tasks:
+    - name: Ensure old container is removed (if running)
+      docker_container:
+        name: "{{ app_name }}"
+        state: absent
+        force_kill: yes
+
+    - name: Ensure old code is removed
       file:
-        path: /home/ubuntu/phpapp
+        path: "{{ app_dir }}"
         state: absent
 
-    - name: Clone latest code
+    - name: Clone latest code from GitHub
       git:
-        repo: https://github.com/yourusername/projCert.git
-        dest: /home/ubuntu/phpapp
+        repo: "{{ app_repo }}"
+        dest: "{{ app_dir }}"
+        force: yes
 
-    - name: Build Docker Image
-      shell: docker build -t phpapp /home/ubuntu/phpapp
+    - name: Build Docker image from cloned code
+      docker_image:
+        name: "{{ app_image }}"
+        path: "{{ app_dir }}"
+        state: present
 
-    - name: Run Docker container
-      shell: docker run -d -p 80:80 --name phpapp phpapp
+    - name: Run Docker container from built image
+      docker_container:
+        name: "{{ app_name }}"
+        image: "{{ app_image }}"
+        state: started
+        ports:
+          - "{{ app_port }}:80"
+        restart_policy: always
