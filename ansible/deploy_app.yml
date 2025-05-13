@@ -6,7 +6,7 @@
     app_repo: https://github.com/aryanxcodex/projCert-DevOps
     app_dir: /home/ubuntu/phpapp
     dockerfile_dir: /home/ubuntu/phpapp  # Ensure Dockerfile is here after clone
-    app_image: "phpapp:{{ ansible_date_time.iso8601 }}"
+    app_image: "phpapp2"
     app_port: 80
 
   tasks:
