@@ -44,6 +44,7 @@
         source: build
         build:
           path: "{{ dockerfile_dir }}"
+          nocache: yes
         state: present
 
     - name: Run Docker container from built image
